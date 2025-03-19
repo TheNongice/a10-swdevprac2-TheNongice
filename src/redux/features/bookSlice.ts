@@ -1,4 +1,4 @@
-import { createSlice } from "@reduxjs/toolkit";
+import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 
 type BookState = {
     bookItems: BookingItem[]
@@ -7,9 +7,27 @@ type BookState = {
 const initialState: BookState = { bookItems: [] };
 
 export const bookSlice = createSlice({
-    name: "book",
+    name: "bookSlice",
     initialState,
     reducers: {
-        // TODO: Add the reducer to add a new booking item
+        addBooking(state, action: PayloadAction<BookingItem>) {
+            state.bookItems = state.bookItems.filter(
+                (obj) => !(obj.venue === action.payload.venue && obj.bookDate === action.payload.bookDate)
+            );
+            state.bookItems.push(action.payload);
+        },
+        removeBooking(state, action: PayloadAction<BookingItem>) {
+            state.bookItems = state.bookItems.filter(
+                (obj) => {
+                    return !(obj.nameLastname === action.payload.nameLastname
+                        && obj.tel === action.payload.tel
+                        && obj.venue === action.payload.venue
+                        && obj.bookDate === action.payload.bookDate);
+                }
+            );
+        }
     }
 });
+
+export const { addBooking, removeBooking } = bookSlice.actions;
+export default bookSlice.reducer;
